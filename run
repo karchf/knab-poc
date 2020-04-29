@@ -28,7 +28,7 @@ case $action in
 		adminUsername=$adminUsername \
 		adminPasswordOrKey=$adminPasswordOrKey
 
-	az deployment group show -n $deploymentName -g $ResourceGroup --query properties.outputs >> uncleanOutput.json
+	az deployment group show -n $deploymentName -g $ResourceGroup --query properties.outputs >> /knab/app/uncleanOutput.json
 	python3 /knab/app/addValuesAndCleanJson.py
     ;;
 
