@@ -13,20 +13,43 @@
 #$adminPasswordOrKey
 deploymentName="${name}-deployment"
 
+case $action in
+    install)
+    echo "Install action"
+    set -x
+	az login --service-principal --username $ServicePrincipalAppID --password $ServicePrincipalPassword --tenant $ServicePrincipalTenantID
+	az account set --subscription $SubscriptionID
 
-set -x
-az login --service-principal --username $ServicePrincipalAppID --password $ServicePrincipalPassword --tenant $ServicePrincipalTenantID
-az account set --subscription $SubscriptionID
+	az deployment group create \
+		--resource-group $ResourceGroup \
+		--template-file /knab/app/art/azuredeploy.json \
+		--name $deploymentName \
+		--parameters vmName=$name \
+		adminUsername=$adminUsername \
+		adminPasswordOrKey=$adminPasswordOrKey
 
+	az deployment group show -n $deploymentName -g $ResourceGroup --query properties.outputs >> uncleanOutput.json
+	python3 /knab/app/addValuesAndCleanJson.py
+    ;;
 
+    uninstall)
+    echo "Uninstall action"
+    set -x
+	az login --service-principal --username $ServicePrincipalAppID --password $ServicePrincipalPassword --tenant $ServicePrincipalTenantID
+	az account set --subscription $SubscriptionID
+	az deployment group delete \
+		--resource-group $ResourceGroup \
+		--name $deploymentName 
+    ;;
 
-az deployment group create \
-	--resource-group $ResourceGroup \
-	--template-file /knab/app/art/azuredeploy.json \
-	--name $deploymentName \
-	--parameters vmName=$name \
-	adminUsername=$adminUsername \
-	adminPasswordOrKey=$adminPasswordOrKey
+    upgrade)
+    echo "Upgrade action"
+    ;;
 
-az deployment group show -n $deploymentName -g $ResourceGroup --query properties.outputs >> uncleanOutput.json
-python3 addValuesAndCleanJson.py 
+    *)
+    echo "No action for $action"
+    ;;
+esac
+echo "Action $action complete for $name"
+
+	 
