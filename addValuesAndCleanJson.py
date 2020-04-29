@@ -5,6 +5,7 @@ output = {}
 unclean_output = {}
 
 output['adminPasswordOrKey'] = os.getenv('adminPasswordOrKey')
+output['type'] = 'VM'
 
 with open("/knab/app/uncleanOutput.json") as input_file:
 	unclean_output = json.load(input_file)
