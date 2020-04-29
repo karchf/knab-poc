@@ -1,14 +1,14 @@
 #!/bin/bash
 #Environment variables:
-#$ServicePrincipalUsername
-#$ServicePrincipalPassword
-#$ServicePrincipalTenantID
-#$SubscriptionID
-#$ResourceGroup
+#$ServicePrincipalAppID=3ea0dd14-91eb-48f1-b116-bd90b3c1bf80
+#$ServicePrincipalPassword=9b821ff6-c985-478f-aa9e-792b2a654b02
+#$ServicePrincipalTenantID=b846a774-f39d-4a2d-9366-f3dda22c6bf0
+#$SubscriptionID=3f61bfaa-f3af-4084-9c09-17e9b9d919d2
+#$ResourceGroup=knab-poc
 
 
-
-az login --service-principal --username $ServicePrincipalUsername --password $ServicePrincipalPassword --tenant $ServicePrincipalTenantID
+set -x
+az login --service-principal --username $ServicePrincipalAppID --password $ServicePrincipalPassword --tenant $ServicePrincipalTenantID
 az account set --subscription $SubscriptionID
 
-az group deployment create --resource-group $ResourceGroup --template-file ./art/azuredeploy.json
+az group deployment create --resource-group $ResourceGroup --template-file /knab/app/art/azuredeploy.json
