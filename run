@@ -1,0 +1,14 @@
+#!/bin/bash
+#Environment variables:
+#$ServicePrincipalUsername
+#$ServicePrincipalPassword
+#$ServicePrincipalTenantID
+#$SubscriptionID
+#$ResourceGroup
+
+
+
+az login --service-principal --username $ServicePrincipalUsername --password $ServicePrincipalPassword --tenant $ServicePrincipalTenantID
+az account set --subscription $SubscriptionID
+
+az group deployment create --resource-group $ResourceGroup --template-file ./art/azuredeploy.json
