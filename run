@@ -11,6 +11,7 @@
 #$ResourceGroup=knab-poc
 #$adminUsername
 #$adminPasswordOrKey
+deploymentName="${name}-deployment"
 
 
 set -x
@@ -22,6 +23,10 @@ az account set --subscription $SubscriptionID
 az deployment group create \
 	--resource-group $ResourceGroup \
 	--template-file /knab/app/art/azuredeploy.json \
+	--name $deploymentName \
 	--parameters vmName=$name \
 	adminUsername=$adminUsername \
 	adminPasswordOrKey=$adminPasswordOrKey
+
+az deployment group show -n $deploymentName -g $ResourceGroup --query properties.outputs >> uncleanOutput.json
+python3 addValuesAndCleanJson.py 
